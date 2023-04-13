@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info" monitorInterval="30">
+
     <Properties>
         <Property name="LOG_FORMAT">%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Property>
     </Properties>
@@ -8,7 +9,7 @@
         <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_FORMAT}"/>
         </Console>
-        <File name="file" fileName="./logs/file/test.log">
+        <File name="file" fileName="./logs/file/spring-cache.log">
             <PatternLayout pattern="%d %5p [%c] %m%n" />
         </File>
     </Appenders>
@@ -18,8 +19,5 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="file" />
         </Root>
-        <logger name="com.market.server" level="trace" additivity="false" >
-            <AppenderRef ref="file" />
-        </logger>
     </Loggers>
 </Configuration>

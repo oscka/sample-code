@@ -4,9 +4,13 @@
 server.port: 18080
 
 spring:
+  #### h2 ###
+  h2:
+    console:
+      enabled: true
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/commerce;MODE=MYSQL
+    url: jdbc:h2:~/sample;MODE=MYSQL
     username: sa
     password:
   #### jpa ###
@@ -18,15 +22,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL57Dialect
         show_sql: true
         format_sql: true
-  #### cache ###
-  cache:
-    type: redis
-    ttl: 36288000
-  #### redis ###
-  redis:
-    cache:
-      host: host.docker.internal
-      port: 6001
 
 #### logging ###
 logging.level:

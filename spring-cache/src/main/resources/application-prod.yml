@@ -4,7 +4,7 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:mariadb://host.docker.internal:3306/commerce
+      jdbc-url: jdbc:mariadb://host.docker.internal:3306/sample
       driver-class-name: org.mariadb.jdbc.Driver
       username: username
       password: password
@@ -17,15 +17,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL57Dialect
         show_sql: false
         format_sql: true
-  #### cache ###
-  cache:
-    type: redis
-    ttl: 36288000
-  #### redis ###
-  redis:
-    cache:
-      host: host.docker.internal
-      port: 6001
 
 #### logging ###
 logging.level:

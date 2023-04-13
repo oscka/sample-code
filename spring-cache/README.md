@@ -1,6 +1,11 @@
 # spring-cache
+spring-cache-**.md** 내용은 [Confluence](https://osc-korea.atlassian.net/wiki/home) 에 더 자세히 나와있습니다.
+1. [Spring Cache](spring-cache-01.md)
+2. [Spring 의 Cache 추상화 (Cache Abstraction)](spring-cache-02.md)
+3. [Caffeine Cache (Local Cache) 사용법](spring-cache-03.md)
+4. [Spring Data Redis (Global Cache) 사용법](spring-cache-04.md)
 
-## project 기술 스택
+## Project 기술 스택
 - Spring Boot 3.0.5, Java 17, Gradle 7.6.1
 - Spring Data JPA
 - MariaDB (prod) , H2 (local,test)
@@ -8,28 +13,37 @@
 - Local Cache - **Caffeine** (local-cache)
 - Global Cache - **Redis**
 
-**Cache** 란 자주 사용하는 데이터나 값을 미리 복사해 놓는 임시장소를 가리킨다.
+## Project 상세
+1. **Spring Rest Docs**
+브라우저에서 api 문서 접근
+- URL : <Server-IP>/docs/api-guide.html
+  - ex) http://localhost:18080/docs/api-guide.html
 
-### Local Cache  
-Local 장비 내에서만 사용되는 캐시로, Local 장비의 Resource 를 이용한다.  
-Spring 진영에서 Local Cache 로 [EhCache](https://www.ehcache.org/) , [Caffeine Cache](https://github.com/ben-manes/caffeine) 가 대표적으로 쓰인다.  
-- 장점
-  - Local 서버 내에서 작동하기 때문에 속도가 빠르다.
-- 단점
-  - Local 서버 에서만 작동하기 때문에 다른 서버와 데이터 공유가 어렵다.
-  - 로컬 캐시는 속도가 빠른 반면 서버가 많을 수록 동기화를 하는 부하가 생긴다.
-  - Local 서버의 Resource를 사용하기 때문에 Java application 의 Full GC 가 일어났을 때 애플리케이션의 성능과 안정성 큰 영향을 준다.
+2. **H2 console**
 
-### Global Cache
-Spring 진영에서 Global Cache 로  Redis , Memcached 가 대표적으로 쓰인다.  
-여러 서버에서 Cache Server 에 접근하여 사용하는 캐시로 분산된 서버에서 데이터를 저장하고 조회할수 있다.  
-- 장점
-  - 별도의 Cache Server 를 이용하기 때문에 서버 간의 데이터 공유가 쉽다.
-  - 데이터를 분산하여 저장할 수 있다.
-    - **Replication** : 두 개 이상의 DBMS 시스템을 Master / Salve 로 나눠서 동일한 데이터를 저장하는 방식
-    - **Sharding** : 같은 테이블 스키마를 가진 데이터를 다수의 데이터베이스에 분산하여 저장하는 방법
-- 단점
-  - 네트워크를 통해 데이터를 가져오므로, Local Cache 에 비해 상대적으로 느리다.
+```yaml
+---
+# application.yml
+spring:
+  profiles:
+    active: local
+---
+# application-local.yml
+spring:
+  #### h2 ###
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/sample;MODE=MYSQL
+    username: sa
+    password:
+```
+application.yml 에서 profile 을 local 로 지정하면 application-local.yml 의 내용이 활성화된다.
+브라우저에서 h2-console 접속
+- URL : <Server-IP>/h2-console
+  - ex) http://localhost:18080/h2-console
 
 
 

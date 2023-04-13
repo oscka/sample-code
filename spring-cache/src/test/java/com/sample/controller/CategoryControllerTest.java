@@ -60,7 +60,7 @@ public class CategoryControllerTest {
 
 	CategoryDto.SaveChildCategory childCategory = CategoryDto.SaveChildCategory.builder()
 		.catName("가디건")
-		.catLevel(1)
+		.catLevel(2)
 		.status(CategoryStatus.ACTIVE)
 		.upperCatCode(1L)
 		.build();
@@ -103,17 +103,17 @@ public class CategoryControllerTest {
 		doNothing().when(categoryService).saveParentCategory(parentCategory);
 
 		mockMvc.perform(post("/categories/parent")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsString(parentCategory)))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(parentCategory)))
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andDo(document("categories/parent/create",
 				getDocumentRequest(),
 				requestFields(
-				fieldWithPath("catName").type(JsonFieldType.STRING).description("카테고리 이름"),
-				fieldWithPath("catLevel").type(JsonFieldType.NUMBER).description("카테고리 LEVEL"),
-				fieldWithPath("status").type(JsonFieldType.STRING).description("카테고리 상태")
-			)));
+					fieldWithPath("catName").type(JsonFieldType.STRING).description("카테고리 이름"),
+					fieldWithPath("catLevel").type(JsonFieldType.NUMBER).description("카테고리 LEVEL"),
+					fieldWithPath("status").type(JsonFieldType.STRING).description("카테고리 상태")
+				)));
 	}
 
 	@DisplayName("하위 카테고리 추가")
@@ -131,11 +131,11 @@ public class CategoryControllerTest {
 			.andDo(document("categories/child/create",
 				getDocumentRequest(),
 				requestFields(
-				fieldWithPath("catName").type(JsonFieldType.STRING).description("카테고리 이름"),
+					fieldWithPath("catName").type(JsonFieldType.STRING).description("카테고리 이름"),
 					fieldWithPath("status").type(JsonFieldType.STRING).description("카테고리 상태"),
-				fieldWithPath("catLevel").type(JsonFieldType.NUMBER).description("카테고리 LEVEL"),
-				fieldWithPath("upperCatCode").type(JsonFieldType.NUMBER).description("상위 카테고리 Code")
-			)));
+					fieldWithPath("catLevel").type(JsonFieldType.NUMBER).description("카테고리 LEVEL"),
+					fieldWithPath("upperCatCode").type(JsonFieldType.NUMBER).description("상위 카테고리 Code")
+				)));
 	}
 
 	@DisplayName("상위카테고리를 지정하지 않을시 모든 카테고리를 return 한다.")
@@ -236,7 +236,7 @@ public class CategoryControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("categories/delete",pathParameters(
 				parameterWithName("id").description("카테고리 ID"))
-		));
+			));
 	}
 
 }
