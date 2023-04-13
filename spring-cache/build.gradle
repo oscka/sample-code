@@ -1,0 +1,116 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+group = 'com.commerce'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+	all {
+		//logback과의 충돌 방지
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+
+	asciidoctorExt
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+	set('springCloudVersion', "2022.0.2")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// json
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
+	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml'
+
+	// cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	// local cache (caffeine)
+	implementation 'com.github.ben-manes.caffeine:caffeine'
+
+
+	// log4j2
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	testImplementation 'org.projectlombok:lombok:1.18.22'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+	testCompileOnly 'org.projectlombok:lombok:1.18.22'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// rest-doc
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+// gradle build시 test -> asciidoctor 순으로 실행됩니다.
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+
+	// source가 없으면 .adoc파일을 전부 html로 만들어버림
+	// source 지정시 특정 adoc만 HTML로 만든다.
+	sources{
+		include("**/api-guide.adoc","**/common/*.adoc")
+	}
+
+	// 특정 .adoc에 다른 adoc 파일을 가져와서(include) 사용하고 싶을 경우 경로를 baseDir로 맞춰주는 설정입니다.
+	// 개별 adoc으로 운영한다면 필요 없는 옵션입니다.
+	baseDirFollowsSourceFile()
+}
+
+// static/docs 폴더 비우기
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+// asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+// bootJar 의 의존작업 명시
+bootJar {
+	dependsOn copyDocument
+}
