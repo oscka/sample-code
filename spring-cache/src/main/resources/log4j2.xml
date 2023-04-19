@@ -15,6 +15,14 @@
     </Appenders>
 
     <Loggers>
+
+
+        <!-- Spring Cache Logging 설정 (생략 가능) -->
+        <logger name="org.springframework.cache" level="trace" additivity="false" >
+            <AppenderRef ref="Console" />
+        </logger>
+
+        <!-- Root logger -->
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="file" />

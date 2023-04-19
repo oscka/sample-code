@@ -7,7 +7,7 @@ import org.springframework.cache.interceptor.KeyGenerator;
 
 public class CacheKeyGenerator implements KeyGenerator {
 
-	private static final String PREFIX = "category:";
+	private static final String PREFIX = "spring-cache:";
 
 	@Override
 	public Object generate(Object target, Method method, Object... params) {

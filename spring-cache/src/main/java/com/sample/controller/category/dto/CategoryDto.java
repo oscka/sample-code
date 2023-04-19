@@ -115,6 +115,16 @@ public class CategoryDto {
 			this.upperCatCode = upperCatCode;
 		}
 
+		public Category toEntity(){
+			return Category.builder()
+				.id(this.id)
+				.catName(this.catName)
+				.catLevel(this.catLevel)
+				.upperCatCode(this.upperCatCode)
+				.status(this.status)
+				.build();
+		}
+
 	}
 
 

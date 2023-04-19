@@ -16,7 +16,7 @@ spring-cache-**.md** 내용은 [Confluence](https://osc-korea.atlassian.net/wiki
 ## Project 상세
 1. **Spring Rest Docs**
 브라우저에서 api 문서 접근
-- URL : <Server-IP>/docs/api-guide.html
+- URL : {server-address}**/docs/api-guide.html**
   - ex) http://localhost:18080/docs/api-guide.html
 
 2. **H2 console**
@@ -42,7 +42,7 @@ spring:
 ```
 application.yml 에서 profile 을 local 로 지정하면 application-local.yml 의 내용이 활성화된다.
 브라우저에서 h2-console 접속
-- URL : <Server-IP>/h2-console
+- URL : {server-address}**/h2-console**
   - ex) http://localhost:18080/h2-console
 
 

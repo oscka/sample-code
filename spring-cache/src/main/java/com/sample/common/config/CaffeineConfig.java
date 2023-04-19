@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.catalina.webresources.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +17,9 @@ import com.sample.common.constant.CacheType;
 import com.sample.common.util.CacheKeyGenerator;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @EnableCaching
 @Configuration
 public class CaffeineConfig  {
@@ -35,6 +36,11 @@ public class CaffeineConfig  {
 					.expireAfterWrite(cache.getExpireAfterWrite(), TimeUnit.SECONDS)
 					// maximumSize: 캐시에 포함할 수 있는 최대 엔트리수를 지정
 					.maximumSize(cache.getMaximumSize())
+					.removalListener((key, value, cause) -> {
+						if (cause.wasEvicted()) {
+							log.debug("[caffeine cache] [key]: {}, [value]: {}", key, value);
+						}
+					})
 					.recordStats()
 					.build()
 			))
@@ -44,6 +50,10 @@ public class CaffeineConfig  {
 		return cacheManager;
 	}
 
+	/**
+	 * custom key 를 만들 때 사용
+	 * [ex] @Cacheable(value = "category", keyGenerator = "cacheKeyGenerator")
+	 */
 	@Bean("cacheKeyGenerator")
 	public KeyGenerator keyGenerator() {
 		return new CacheKeyGenerator();
