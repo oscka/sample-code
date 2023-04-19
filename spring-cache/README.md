@@ -45,6 +45,11 @@ application.yml 에서 profile 을 local 로 지정하면 application-local.yml 
 - URL : {server-address}**/h2-console**
   - ex) http://localhost:18080/h2-console
 
+3. api test 방법
+- [상품 API 테스트](product.http)
+- [카테고리 API 테스트](category.http)
+   
+
 
 
 
