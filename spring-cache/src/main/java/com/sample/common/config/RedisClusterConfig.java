@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -27,7 +26,6 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.sample.common.properties.CacheProperties;
-import com.sample.common.util.CacheKeyGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -35,11 +33,13 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Profile("prod") : profile 이 prod 일 경우에만 사용되는 Config file 이다.
  * Redis Cluster 는 Kubernetes 에 구성돼있으며, Spring Boot Project 는 {service-name}:{namespace} 를 이용하여 Redis와 연결된다.
  */
+@Slf4j
 @Profile("prod")
 @RequiredArgsConstructor
 @EnableCaching
@@ -55,6 +55,7 @@ public class RedisClusterConfig {
 	@Value("${spring.redis.cluster.max-redirect}")
 	private int maxRedirect;
 
+	// Redis connection 설정
 	@Bean(name = "redisCacheConnectionFactory")
 	public RedisConnectionFactory connectionFactory() {
 
@@ -68,6 +69,7 @@ public class RedisClusterConfig {
 		// return new LettuceConnectionFactory(clusterConfiguration);
 	}
 
+	// Redis 에서 사용할 object mapper 설정
 	private ObjectMapper objectMapper() {
 
 		PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
@@ -82,6 +84,7 @@ public class RedisClusterConfig {
 		return mapper;
 	}
 
+	// 직렬화, 역직렬화 설정
 	private RedisCacheConfiguration redisCacheDefaultConfiguration() {
 		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
 			.defaultCacheConfig()
@@ -90,6 +93,7 @@ public class RedisClusterConfig {
 		return redisCacheConfiguration;
 	}
 
+	// Redis {cache name} : {ttl} 설정
 	private Map<String, RedisCacheConfiguration> redisCacheConfigurationMap() {
 		Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 		for (Map.Entry<String, Long> cacheNameAndTimeout : cacheProperties.getTtl().entrySet()) {
@@ -100,6 +104,11 @@ public class RedisClusterConfig {
 		return cacheConfigurations;
 	}
 
+
+	/*
+		Redis cacheManager 설정
+		@Cacheable : 스프링 Cache 에서 사용할 용도
+	 */
 	@Bean(name="redisCacheManager")
 	public CacheManager redisCacheManager(@Qualifier("redisCacheConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
 		RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
@@ -108,11 +117,6 @@ public class RedisClusterConfig {
 			.withInitialCacheConfigurations(redisCacheConfigurationMap())
 			.build();
 		return redisCacheManager;
-	}
-
-	@Bean("cacheKeyGenerator")
-	public KeyGenerator keyGenerator() {
-		return new CacheKeyGenerator();
 	}
 
 }
