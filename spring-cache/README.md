@@ -46,6 +46,12 @@ application.yml 에서 profile 을 local 로 지정하면 application-local.yml 
   - ex) http://localhost:18080/h2-console
 
 3. api test 방법
+- VSCode 
+  - (httpYac - Rest Client) Extensions 설치
+  - http 확장자인 파일 테스트
+- IntelliJ
+  - Ultimate(유료) 일경우 http 테스트 사용가능
+
 - [상품 API 테스트](product.http)
 - [카테고리 API 테스트](category.http)
    
