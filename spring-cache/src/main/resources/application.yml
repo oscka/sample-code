@@ -6,7 +6,8 @@ spring:
     name: spring-cache
 
 ## 캐시 name 별 TTL 지정
-cache:
-  redis:
-    category: 368000
-    product: 600000
+custom:
+  cache:
+    ttl:
+      category: 368000
+      product: 600000

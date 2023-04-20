@@ -7,7 +7,7 @@ spring-cache-**.md** 내용은 [Confluence](https://osc-korea.atlassian.net/wiki
 
 ## Project 기술 스택
 - Spring Boot 3.0.5, Java 17, Gradle 7.6.1
-- Spring Data JPA
+- Spring Data JPA, QueryDSL
 - MariaDB (prod) , H2 (local,test)
 - Spring Rest Docs , log4j2
 - Local Cache - **Caffeine** (local-cache)

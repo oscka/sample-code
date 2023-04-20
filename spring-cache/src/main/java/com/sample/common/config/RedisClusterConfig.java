@@ -1,6 +1,8 @@
 package com.sample.common.config;
 
 
+import static io.lettuce.core.ReadFrom.*;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
@@ -55,14 +58,14 @@ public class RedisClusterConfig {
 	@Bean(name = "redisCacheConnectionFactory")
 	public RedisConnectionFactory connectionFactory() {
 
-		// LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-		// 	.readFrom(REPLICA_PREFERRED)
-		// 	.build();
-		// return new LettuceConnectionFactory(new RedisClusterConfiguration(clusterNodes),clientConfig);
+		LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+			.readFrom(REPLICA_PREFERRED)
+			.build();
+		return new LettuceConnectionFactory(new RedisClusterConfiguration(clusterNodes),clientConfig);
 
-		RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-		clusterConfiguration.setMaxRedirects(maxRedirect);
-		return new LettuceConnectionFactory(clusterConfiguration);
+		// RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(clusterNodes);
+		// clusterConfiguration.setMaxRedirects(maxRedirect);
+		// return new LettuceConnectionFactory(clusterConfiguration);
 	}
 
 	private ObjectMapper objectMapper() {

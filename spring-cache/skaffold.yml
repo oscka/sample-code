@@ -6,7 +6,7 @@ profiles:
       local:
         push: true # false는 로컬 테스트
       artifacts:
-        - image: jei0486/commerce-api # on dev server (docker hub에 push하고 실행)
+        - image: jei0486/sample-api # on dev server (docker hub에 push하고 실행)
           # - image: commerce-api     # local (로컬/push없이 실행만)
           jib:
             args:
