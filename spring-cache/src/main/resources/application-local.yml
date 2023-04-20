@@ -22,6 +22,16 @@ spring:
         dialect: org.hibernate.dialect.MySQL57Dialect
         show_sql: true
         format_sql: true
+  ##### REDIS ####
+  cache:
+    type: redis
+  #### redis ###
+  redis:
+    cache:
+      host: host.docker.internal
+      port: 6001
+
+
 
 #### logging ###
 logging.level:
