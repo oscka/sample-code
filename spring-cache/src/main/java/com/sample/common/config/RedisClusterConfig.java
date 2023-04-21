@@ -21,9 +21,11 @@ import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.sample.common.properties.CacheProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +34,9 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,12 +47,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Profile("prod")
 @RequiredArgsConstructor
+@EnableTransactionManagement
 @EnableCaching
 @Configuration
 public class RedisClusterConfig {
 
 	private final CacheProperties cacheProperties;
-
 
 	@Value("${spring.redis.cluster.nodes}")
 	private List<String> clusterNodes;
@@ -55,18 +60,43 @@ public class RedisClusterConfig {
 	@Value("${spring.redis.cluster.max-redirect}")
 	private int maxRedirect;
 
+	// RedisTemplate 직렬화
+	@Bean
+	public RedisTemplate<String,Object> redisTemplate(){
+		RedisTemplate redisTemplate = new RedisTemplate<>();
+		redisTemplate.setConnectionFactory(connectionFactory());
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+		redisTemplate.setEnableTransactionSupport(true); // transaction setting
+		return redisTemplate;
+	}
+
 	// Redis connection 설정
 	@Bean(name = "redisCacheConnectionFactory")
 	public RedisConnectionFactory connectionFactory() {
 
-		LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-			.readFrom(REPLICA_PREFERRED)
-			.build();
-		return new LettuceConnectionFactory(new RedisClusterConfiguration(clusterNodes),clientConfig);
+		// 클러스터 호스트 세팅
+		RedisClusterConfiguration redisClusterConfig = new RedisClusterConfiguration(clusterNodes);
+		redisClusterConfig.setMaxRedirects(maxRedirect);
 
-		// RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-		// clusterConfiguration.setMaxRedirects(maxRedirect);
-		// return new LettuceConnectionFactory(clusterConfiguration);
+		// topology 자동 업데이트 옵션 추가
+		// enablePeriodicRefresh(tolpology 정보 감시 텀) default vaule : 60s
+		ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
+			.enableAllAdaptiveRefreshTriggers()  // MOVED, ASK, PERSISTENT_RECONNECTS, UNCOVERED_SLOT, UNKOWN_NODE trigger시 refresh 진행
+			.build();
+
+		ClientOptions clientOptions = ClusterClientOptions.builder()
+			.topologyRefreshOptions(clusterTopologyRefreshOptions)
+			.build();
+
+		// topology 옵션 및 timeout 세팅
+		LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
+			.clientOptions(clientOptions)
+			.commandTimeout(Duration.ofSeconds(2000L)) // timeout Duration 값
+			.readFrom(REPLICA_PREFERRED) // slave 에서 읽도록 설정
+			.build();
+		
+		return new LettuceConnectionFactory(redisClusterConfig,clientConfiguration);
 	}
 
 	// Redis 에서 사용할 object mapper 설정

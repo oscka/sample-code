@@ -1,7 +1,7 @@
 # 상품 추가
 POST /products HTTP/1.1
 Content-Type: application/json
-Host: localhost:18080
+Host: demo.com
 
 {
   "name" : "노랑 니트",
@@ -19,18 +19,18 @@ Host: localhost:18080
 ###
 # 조회 > 개별상품 []
 GET /products/1 HTTP/1.1
-Host: localhost:18080
+Host: demo.com
 
 
 ###
 # 조회 > 상품 검색
 GET /products?upperCatCode=1 HTTP/1.1
-Host: localhost:18080
+Host: demo.com
 
 ###
 # 상품 수정
 PUT /products/1
-Host: localhost:18080
+Host: demo.com
 Content-Type: application/json
 
 {
@@ -48,4 +48,4 @@ Content-Type: application/json
 ###
 # 상품 삭제
 DELETE /products/3 HTTP/1.1
-Host: localhost:18080
+Host: demo.com
