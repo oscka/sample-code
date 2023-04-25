@@ -4,7 +4,9 @@
 server.port: 18080
 
 spring:
-  #### h2 ###
+# ----------------------
+# dataSource
+# ----------------------
   h2:
     console:
       enabled: true
@@ -13,7 +15,9 @@ spring:
     url: jdbc:h2:~/sample;MODE=MYSQL
     username: sa
     password:
-  #### jpa ###
+# ----------------------
+# jpa
+# ----------------------
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -22,18 +26,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL57Dialect
         show_sql: true
         format_sql: true
-  ##### REDIS ####
-  cache:
-    type: redis
-  #### redis ###
+# ----------------------
+# REDIS
+# ----------------------
   redis:
-    cache:
-      host: host.docker.internal
-      port: 6001
-
-
-
-#### logging ###
-logging.level:
-  org.hibernate.SQL: debug
-  org.hibernate.type: trace
+    host: host.docker.internal
+    port: 6001

@@ -26,7 +26,9 @@ public class BestProductRedisOperation implements RedisZSetOperation<ProductDto.
 	public void execute(ZSetOperations<String, Object> operations, List<ProductDto.ProductRankingDto> productRankingDtoList) {
 
 		Long count = this.zCard(operations);
-		if (Optional.ofNullable(count).orElse(0L) == 0){
+
+		// count 가 null 이거나 0 일경우 range 를 삭제한다.
+		if (Optional.ofNullable(count).orElse(count) == 0){
 			this.removeRange(operations, count);
 		}
 

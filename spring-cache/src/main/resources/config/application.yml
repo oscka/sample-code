@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: local
+#-----------------------
+# 공통 영역
+#-----------------------
+  application:
+    name: spring-cache
+  cache:
+    type: redis
+
+#-----------------------
+# 캐시 name 별 TTL 지정
+#-----------------------
+custom:
+  cache:
+    ttl:
+      category: 368000
+      product: 600000
+
+#-----------------------
+# logging
+# (profile 별로 다르게 설정할수 있지만, 공통영역으로 통합)
+#-----------------------
+logging.level:
+  #  root: debug
+  org.hibernate.SQL: debug
+  org.hibernate.type: debug
