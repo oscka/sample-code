@@ -1,0 +1,128 @@
+= Commerce API guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+
+[[overview_http_verbs]]
+== HTTP Methods
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its use of HTTP verbs.
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+[[overview_http_status_codes]]
+== HTTP status codes
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully.
+The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed.
+The response body will include an error providing further information
+
+| `401 Unauthorized`
+| The request has not been applied because it lacks valid authentication credentials for the target resource.
+
+| `403 Forbidden`
+| The server understood the request but refuses to authorize it.
+
+| `404 Not Found`
+| The requested resource did not exist
+
+| `409 Conflict`
+| The request could not be completed due to a conflict with the current state of the target resource.
+This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
+|===
+
+== Category API
+
+=== 1. CREATE Category
+
+==== 상위 카테고리 추가
+
+**request-fields**
+include::{snippets}/categories/parent/create/request-fields.adoc[]
+
+**Example request**
+include::{snippets}/categories/parent/create/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/parent/create/http-response.adoc[]
+
+==== 하위 카테고리 추가
+
+**request-fields**
+include::{snippets}/categories/child/create/request-fields.adoc[]
+
+**Example request**
+include::{snippets}/categories/child/create/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/child/create/http-response.adoc[]
+
+=== 2. Category 조회
+
+==== 모든 카테고리 조회
+
+**Example request**
+include::{snippets}/categories/find-all-category/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/find-all-category/http-response.adoc[]
+
+==== 하위 카테고리 조회
+
+**Example request**
+include::{snippets}/categories/find-child-category/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/find-child-category/http-response.adoc[]
+
+=== 3. Category 수정
+
+**Example request**
+include::{snippets}/categories/update/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/update/http-response.adoc[]
+
+=== 4. Category 삭제
+
+**Example request**
+include::{snippets}/categories/delete/http-request.adoc[]
+
+**Example response**
+include::{snippets}/categories/delete/http-response.adoc[]

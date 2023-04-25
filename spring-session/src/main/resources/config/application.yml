@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: commerce-api
+  profiles:
+    active: local
+  lifecycle:
+    timeout-per-shutdown-phase: 10s # graceful shutdown 유예시간 설정
+  config:
+    import: classpath:custom.yml
+#--------------------------
+# cache
+#--------------------------
+  cache:
+    type: redis
+  
+
+#--------------------------
+# server setting
+#--------------------------
+server:
+  shutdown: graceful
+  servlet:
+    session:
+      timeout: 60
+      persistent: false
+
+#--------------------------
+# logging
+#--------------------------
+logging:
+  config: classpath:log4j2.xml
+  level:
+    #  root: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.cache: trace
+
+
+
+
+#--------------------------
+# session
+#--------------------------
+#  server.servlet.session.timeout: # 세션 시간 초과. 기간 접미사가 지정되지 않은 경우 초가 사용됩니다.
+#  server.servlet.session.persistent: 세션 지속 여부
+#  server.servlet.session.cookie.*: 세션 쿠키 설정
+#  on-save : 호출될 때만 Redis 에 기록 (default)
+# immediate : 즉시 redis 에 기록
+# namspace : 세션을 저장할때 key 의 prefix (default : spring:session)
+#  spring.session.redis.flush-mode: on_save # 세션 플러시 모드.
+#  spring.session.redis.namespace: spring:session # 세션을 저장하는 데 사용되는 키의 네임스페이스.
+
+
+
+# 내부적으로 Spring Boot 는 @EnableRedisHttpSession 어노테이션을 수동으로 추가하는 것과 동일한 구성을 적용
+# springSessionRepositoryFilter > 해당 이름으로 Spring 빈이 생성된다.
+# Filter , HttpSession 필터는 Spring Session 이 뒷받침할 구현체를 교체하는 역할을 함
+# spring.session.store-type:redis : 세션 저장소 유형 = @EnableRedisHttpSession
+#  session:
+#    store-type: redis

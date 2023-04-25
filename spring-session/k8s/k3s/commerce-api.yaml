@@ -1,0 +1,101 @@
+# 참고 https://danlebrero.com/2018/11/20/how-to-do-java-jvm-heapdump-in-kubernetes/
+# https://medium.com/trendyol-tech/graceful-shutdown-of-spring-boot-applications-in-kubernetes-f80e0b3a30b0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: commerce-api-svc
+  namespace: api
+  labels:
+    app: commerce-api
+spec:
+  ports:
+    - name: rest
+      port: 8080
+      targetPort: http
+  selector:
+    app: commerce-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: commerce-api
+  namespace: api
+  labels:
+    app: commerce-api
+spec:
+  minReadySeconds: 30
+  revisionHistoryLimit: 3
+  replicas: 3
+  selector:
+    matchLabels:
+      app: commerce-api
+  template:
+    metadata:
+      labels:
+        app: commerce-api
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - commerce-api
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+        - name: commerce-api
+          image: jei0486/commerce-api
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          command: ["java"]
+          args: ['-XX:+HeapDumpOnOutOfMemoryError','-XX:HeapDumpPath=/var/logs/dumps/heap-dump.hprof','-cp', '@/app/jib-classpath-file','com.commerce.Application']
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5
+            failureThreshold: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5
+            failureThreshold: 15
+          lifecycle:
+            preStop:
+              httpGet:
+                path: /unhealthy
+                port: http
+          terminationGracePeriodSeconds: 15
+          env:
+            - name: JAVA_OPTS
+              value: "-XX:+UseContainerSupport -Xmx1G -Xms1G"
+          volumeMounts:
+          - name: heap-dumps
+            mountPath: /var/logs/dumps
+      volumes:
+      - name: heap-dumps
+        emptyDir: {}
