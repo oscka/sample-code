@@ -1,0 +1,18 @@
+apiVersion: skaffold/v2beta18
+kind: Config
+profiles:
+  - name: prod                      # skaffold 실행시 -p로 정의된 profile
+    build:
+      local:
+        push: true                  # false는 로컬 테스트
+      artifacts:
+        - image: jei0486/sample-api # docker hub에 push하고 실행
+          jib:
+            args:
+              - -DskipTests
+              - "-Djib.container.environment=SPRING_PROFILES_ACTIVE=prod"  # jib 플러그인을 통해 dev profile에 대해 수행
+            fromImage: library/openjdk:17-jdk-slim                        # 실행을 위한 runtime image
+    deploy:
+      kustomize:
+        paths:
+          - k8s/k3s

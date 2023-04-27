@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: spring-batch
+  profiles:
+    active: local
+  # spring batch config
+  batch:
+    job:
+      enabled: false # application 시작과 동시에 실행되는것 방지
+      names: ${job.name.NONE}
+    initialize-schema: always # batch 스키마 자동 생성
+
+# cache (name + ttl)
+custom:
+  cache:
+    category: 36288000
+    product: 30000
+
+# spring batch config
+chunkSize: 100
+pageSize: 100
+poolSize: 10
+
+#### logging ###
+logging.level:
+  #  root: debug
+  org.hibernate.SQL: debug
+  org.hibernate.type.descriptor.sql.BasicBinder: trace
+  org.springframework.batch: debug
+  org.springframework.cache: trace

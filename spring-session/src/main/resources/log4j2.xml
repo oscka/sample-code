@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" monitorInterval="30">
+
+    <Properties>
+        <Property name="LOG_PATH">./logs/commerce.log</Property>
+
+        <!-- log format -->
+        <!--<Property name="LOG_FORMAT">%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Property>-->
+       <!-- <Property name="LOG_FORMAT">%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c(%M:%L) - %m%n</Property>-->
+        <Property name="LOG_FORMAT">[%date{yyyy-MM-dd HH:mm:ss}] %level %logger{36}(%file:%line) - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_FORMAT}"/>
+        </Console>
+
+        <RollingFile name="file" fileName="${LOG_PATH}" filePattern="${LOG_PATH}_%d{yyyy-MM-dd}_%i.log">
+            <!--
+              Properties > LOG_FORMAT : %d [%t] %-5level %c(%M:%L) - %m%n
+            -->
+            <PatternLayout pattern="${LOG_FORMAT}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" /> <!-- 10MB 용량이 초과시 DefaultRolloverStrategy 정책만큼 넘버링 -->
+                <TimeBasedTriggeringPolicy module="true" interval="1" /><!-- 일별 로그 파일 생성-->
+            </Policies>
+            <DefaultRolloverStrategy max="500" fileIndex="min" /><!-- 롤링 파일 500개 까지 생성 -->
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Root logger -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="file" />
+        </Root>
+
+
+    </Loggers>
+</Configuration>

@@ -1,0 +1,31 @@
+###################
+# prod
+###################
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mariadb://192.168.0.9:3306/sample
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: sample
+      password: sample1234
+  #### jpa ###
+  jpa:
+    hibernate:
+      #ddl-auto: none
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        show_sql: true
+        format_sql: true
+  #### redis ###
+  cache:
+    type: redis
+  redis:
+    cluster:
+      # 6379 : master , 6380 slave
+      nodes: redis-service.redis:6379,redis-service.redis:6380
+      #nodes: redis-service.redis:6379
+      max-redirect: 3
+
+

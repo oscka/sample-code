@@ -1,0 +1,35 @@
+###################
+# local
+###################
+server.port: 18080
+
+#spring:
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:~/commerce;MODE=MYSQL
+#    username: sa
+#    password:
+spring:
+  datasource:
+    hikari:
+      #jdbc-url: jdbc:mariadb://host.docker.internal:3306/sample
+      jdbc-url: jdbc:mariadb://192.168.0.9:3306/sample
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: sample
+      password: sample1234
+  #### jpa ###
+  jpa:
+    hibernate:
+      #ddl-auto: create
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        show_sql: true
+        format_sql: true
+
+  #### redis ###
+  redis:
+    cache:
+      host: host.docker.internal
+      port: 6001

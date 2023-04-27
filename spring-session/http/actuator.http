@@ -1,0 +1,17 @@
+#------------------------
+# Actuator 안전하게 사용하기 | https://techblog.woowahan.com/9232/
+# Spring 공식 문서 | https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/#overview
+#------------------------
+###
+GET http://localhost:18080/actuator
+
+###
+GET http://localhost:18080/actuator/info
+
+###
+GET http://localhost:18080/actuator/health
+###
+GET http://localhost:18080/actuator/health/liveness
+###
+GET http://localhost:18080/actuator/health/readiness
+

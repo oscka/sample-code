@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: commerce-api
+  profiles:
+    active: local
+  lifecycle:
+    timeout-per-shutdown-phase: 10s # graceful shutdown 유예시간 설정
+  config:
+    import: classpath:custom.yml
+#--------------------------
+# cache
+#--------------------------
+  cache:
+    type: redis
+#--------------------------
+# session
+#--------------------------
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on-save
+      namespace: spring:session
+  
+
+#--------------------------
+# server setting
+#--------------------------
+server:
+  shutdown: graceful
+  servlet:
+    session:
+      timeout: 3m
+
+#--------------------------
+# logging
+#--------------------------
+logging:
+  config: classpath:log4j2.xml
+  level:
+    #  root: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.cache: trace
+    com.commerce: debug # project package 로그 설정
+
+#--------------------------
+# actuator
+#--------------------------
+management:
+  endpoints:
+    enabled-by-default: false # 1. Endpoint all disable
+# 3. Exclude all endpoint for JMX and Expose specific endpoints
+    web.exposure.include: "health,info"
+    jmx.exposure.exclude: "*"
+# 2. Enable specific endpoints
+  endpoint:
+    info.enabled: true
+    health:
+      enabled: true
+      probes.enabled: true
+      defaults.enabled: true

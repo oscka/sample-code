@@ -1,0 +1,86 @@
+# 사용자 추가
+POST /users
+Content-Type: application/json
+Host: localhost:18080
+
+{
+  "name" : "홍길동",
+  "email" : "test@demo.com",
+   "password" : "test1234",
+   "phone" : "010-1234-5678",
+   "userLevel" : "AUTH",
+   "gender": "MALE"
+}
+
+###
+
+// {
+//   "name" : "신짱아",
+//   "email" : "admin@demo.com",
+//   "password" : "test1234",
+//   "phone" : "010-1234-5678",
+//   "userLevel" : "ADMIN",
+//   "gender": "FEMALE"
+// }
+
+
+
+###
+# 사용자 조회 (List) (회원조회-list)
+GET /users
+Host: localhost:18080
+Cookie: SESSION=Y2M2OGZhODQtNWNhZi00NTY3LWI5NjUtZmY4YWVmOTJlYjFi
+
+###
+# 사용자 조회 (detail) (회원조회-detail)
+GET /users/1
+Host: localhost:18080
+Cookie: SESSION=Y2M2OGZhODQtNWNhZi00NTY3LWI5NjUtZmY4YWVmOTJlYjFi
+
+###
+# 사용자 수정 (회원수정)
+PUT /users/3
+Host: localhost:18080
+Content-Type: application/json
+Cookie: SESSION=NDdmMzdlMTUtZTAwOS00Y2YzLWJjZWMtODhjNGQ1ODMwODdi
+
+{
+  "name" : "김아무개",
+  "email" : "test2@demo.com",
+  "password" : "test1234",
+  "phone" : "010-1234-5678",
+  "userLevel" : "AUTH",
+  "status": "ACTIVE",
+  "gender": "MALE"
+}
+
+###
+# 사용자 삭제 (회원탈퇴)
+DELETE /users
+Host: localhost:18080
+Cookie: SESSION=NzZkM2E4ZDEtYzExZS00ZmQxLTlhNTItNGU0NTNiNGJlMjBh
+
+###
+# 로그인
+POST /users/login
+Host: localhost:18080
+Content-Type: application/json
+{
+  "email" : "admin@demo.com",
+  "password" : "test1234"
+}
+
+###
+# 로그아웃
+GET /users/logout
+Host: localhost:18080
+Cookie: SESSION=Y2M2OGZhODQtNWNhZi00NTY3LWI5NjUtZmY4YWVmOTJlYjFi
+
+
+###
+# 내 정보
+GET /users/my
+Host: localhost:18080
+Cookie: SESSION=Y2M2OGZhODQtNWNhZi00NTY3LWI5NjUtZmY4YWVmOTJlYjFi
+
+########
