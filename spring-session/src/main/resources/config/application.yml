@@ -30,6 +30,8 @@ server:
   servlet:
     session:
       timeout: 3m
+      cookie:
+        name: "NID_SES"
 
 #--------------------------
 # logging

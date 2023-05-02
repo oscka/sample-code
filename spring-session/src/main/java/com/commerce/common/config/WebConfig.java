@@ -1,5 +1,6 @@
 package com.commerce.common.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,13 @@ public class WebConfig implements WebMvcConfigurer {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(loginInterceptor);
+		List<String> notLoadList = new ArrayList<>();
+		notLoadList.add("/view/**");
+		notLoadList.add("/resources/**");
+
+		registry.addInterceptor(loginInterceptor)
+			.addPathPatterns("/**")
+			.excludePathPatterns(notLoadList);
+
 	}
 }

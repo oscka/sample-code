@@ -32,36 +32,38 @@ public class LoginInterceptor implements HandlerInterceptor {
 		 *
 		 * Custom Annotation 을 사용한다면, Interceptor 에서 위 handler 객체를 사용하여 프로젝트 내에 선언해둔 어노테이션을 가져올수 있다.
 		 */
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		LoginCheck loginCheck = handlerMethod.getMethodAnnotation(LoginCheck.class);
+		if (handler instanceof HandlerMethod) {
+			HandlerMethod handlerMethod = (HandlerMethod) handler;
+			LoginCheck loginCheck = handlerMethod.getMethodAnnotation(LoginCheck.class);
 
-		if (loginCheck == null){
-			return true;
-		}
+			if (loginCheck == null){
+				return true;
+			}
 
-		if (sessionLoginService.getUserSession() == null){
-			throw new RuntimeException("로그인 후 이용가능합니다.");
-		}
+			if (sessionLoginService.getUserSession() == null){
+				throw new RuntimeException("로그인 후 이용가능합니다.");
+			}
 
-		UserLevel userLevel = loginCheck.authority();
+			UserLevel userLevel = loginCheck.authority();
 
-		// --------- 테스트
-		log.debug("userLevel : {}" ,userLevel);
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies){
-			log.debug("cookieName : {} , cookieValue : {}", String.valueOf(cookie.getName()), String.valueOf(cookie.getValue()));
-			log.debug("cookie.getSecure() : {} , cookie.getDomain() : {}", String.valueOf(cookie.getSecure()), String.valueOf(cookie.getDomain()));
-			log.debug("cookie.isHttpOnly() : {} , cookie.getMaxAge() : {}", String.valueOf(cookie.isHttpOnly()), String.valueOf(cookie.getMaxAge()));
-		}
-		// --------- 테스트
+			// --------- 테스트
+			log.debug("userLevel : {}" ,userLevel);
+			Cookie[] cookies = request.getCookies();
+			for (Cookie cookie : cookies){
+				log.debug("cookieName : {} , cookieValue : {}", String.valueOf(cookie.getName()), String.valueOf(cookie.getValue()));
+				log.debug("cookie.getSecure() : {} , cookie.getDomain() : {}", String.valueOf(cookie.getSecure()), String.valueOf(cookie.getDomain()));
+				log.debug("cookie.isHttpOnly() : {} , cookie.getMaxAge() : {}", String.valueOf(cookie.isHttpOnly()), String.valueOf(cookie.getMaxAge()));
+			}
+			// --------- 테스트
 
-		switch (userLevel){
-			case SELLER:
-				sellerCheck();
-				break;
-			case ADMIN:
-				adminCheck();
-				break;
+			switch (userLevel){
+				case SELLER:
+					sellerCheck();
+					break;
+				case ADMIN:
+					adminCheck();
+					break;
+			}
 		}
 
 		return true;

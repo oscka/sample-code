@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>getCookie</title>
+    <style>
+        .login-form {
+            border: 1px solid black;
+        }
+        .login-form tr, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        .login_btn_div {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        .login_btn_div .login_reg_button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 14px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+        .login_btn_div .login_list_link {
+            color: black;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.0/dist/js.cookie.min.js"></script>
+
+    <script th:inline="javascript">
+
+// 쿠키 가져오기 함수
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+function checkCookie() {
+  let username = getCookie("username");
+  if (username != "") {
+   alert("Welcome again " + username);
+  } else {
+    username = prompt("Please enter your name:", "");
+    if (username != "" && username != null) {
+      setCookie("username", username, 365);
+    }
+  }
+}
+
+
+     $(document).ready(function () {
+            var msg = getCookie("NID_SES");
+            alert(" 쿠키 " + msg);
+     });
+    </script>
+
+</head>
+<body>
+<h1>Login Success</h1>
+
+
+</body>
+</html>

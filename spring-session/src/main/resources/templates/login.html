@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <style>
+        .login-form {
+            border: 1px solid black;
+        }
+        .login-form tr, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        .login_btn_div {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        .login_btn_div .login_reg_button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 14px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+        .login_btn_div .login_list_link {
+            color: black;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+        function goLogin(){
+
+            let reqData = {
+               "email"  : document.getElementById("email").value || "",
+               "password"  : document.getElementById("password").value || ""
+            }
+
+            console.log(reqData);
+
+            $.ajax({
+                  type : "POST",
+                  url  : "/users/login",
+                  contentType: 'application/json; charset=utf-8',
+                  data: JSON.stringify(reqData),
+                  success : function (e) {
+                    console.log(e);
+                    location.href = '/view/loginSuccess';
+                  },
+                  error : function (e) {
+                      alert(e.responseText);
+                  }
+             })
+
+        }
+    </script>
+</head>
+<body>
+<h1>Login</h1>
+    <table class="login-form">
+        <tbody>
+        <tr>
+            <th>이메일</th>
+            <td><input type="text" id="email" required placeholder="이메일"/></td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" id="password" required placeholder="password"/></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="login_btn_div">
+        <button class="login_reg_button" id="login_reg_button" type="button" th:onclick="javascript:goLogin()" >로그인</button>
+    </div>
+</body>
+</html>
